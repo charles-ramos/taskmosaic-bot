@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "grammy": "^1.20.3",
+    "telegraf": "^4.15.3",
+    "@grammyjs/chat-members": "^1.0.12"
+  }
+}
