@@ -16,6 +16,6 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
-CMD [ "node", '/bot/index.js']
+CMD [ "node", "/bot/index.js"]
 
 EXPOSE 3000
