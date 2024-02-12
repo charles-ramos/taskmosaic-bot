@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const {
   Bot,
@@ -9,15 +10,18 @@ const {
 
 const { chatMembers } = require('@grammyjs/chat-members');
 
+const Parse = require('parse/node');
+
+Parse.initialize(process.env.BACK4APP_ID, process.env.BACK4APP_JS_KEY);
+Parse.masterKey = process.env.BACK4APP_MASTER_KEY;
+Parse.serverURL = 'https://parseapi.back4app.com/';
+
 const BOT_TOKEN = process.env.TG_BOT_TOKEN;
 
 const web_link = 'https://taskmosaic.com/' + BOT_TOKEN + '/webhook';
 const web_app_url = 'https://taskmosaic.com/app';
 
 const bot = new Bot(BOT_TOKEN);
-
-const adapter = new MemorySessionStorage();
-bot.use(chatMembers(adapter));
 
 const keyboard = new Keyboard()
   .text('🔍??? Мой KZTRVL аккаунт')
@@ -89,20 +93,36 @@ bot.command('task', async (ctx) => {
     let taskIs = ctx.message?.reply_to_message?.text;
     let user = ctx.from.first_name;
 
-    createTaskForReply(ctx)
-      .then(async (res) => {
+    let taskForReply = await createTaskForReply(ctx);
+
+    try {
+      if (taskForReply == 'done') {
         return await ctx.reply(
           `Task: ${taskIs}\nStatus: to-do \nAuthor: ${user}`,
           {
             reply_to_message_id: ctx.message?.message_id,
           }
         );
-      })
-      .catch(async (err) => {
-        return await ctx.reply('Error: ' + err, {
-          reply_to_message_id: ctx.message?.message_id,
-        });
+      }
+    } catch (err) {
+      return await ctx.reply('Error: ' + err, {
+        reply_to_message_id: ctx.message?.message_id,
       });
+    }
+    // createTaskForReply(ctx)
+    //   .then(async (res) => {
+    //     return await ctx.reply(
+    //       `Task: ${taskIs}\nStatus: to-do \nAuthor: ${user}`,
+    //       {
+    //         reply_to_message_id: ctx.message?.message_id,
+    //       }
+    //     );
+    //   })
+    //   .catch(async (err) => {
+    //     return await ctx.reply('Error: ' + err, {
+    //       reply_to_message_id: ctx.message?.message_id,
+    //     });
+    //   });
   }
 
   let message = ctx.message.text;
@@ -293,14 +313,20 @@ bot.hears('⭐️ Помощь', async (ctx) => {
   );
 });
 
+const adapter = new MemorySessionStorage();
+bot.use(chatMembers(adapter));
+
 bot.start({
   //
   // Make sure to specify the desired update types
   allowed_updates: ['chat_member', 'message'],
 });
 
-function createTaskForReply(ctx) {
+async function createTaskForReply(ctx) {
   return new Promise((resolve, reject) => {
+    // // ! TODO remove resolve
+
+    // resolve('done');
     let taskIs = ctx.message?.reply_to_message?.text;
     let user = ctx.from.first_name;
     let username = ctx.from.username;
@@ -318,9 +344,11 @@ function createTaskForReply(ctx) {
 
     task.save(null, { useMasterKey: true }).then(
       (gameScore) => {
+        console.log('New object created with objectId: ' + gameScore.id);
         resolve('done');
       },
       (error) => {
+        console.log('Failed to create new object, with error code: ' + error);
         reject('error');
       }
     );
@@ -342,20 +370,24 @@ function initGroup(ctx) {
     let chat_obj = await ctx.api.getChat(chatId);
 
     let chatDescription = chat_obj?.description;
-    let chatBigPhoto = chat_obj?.photo.big_file_id;
-    let chatSmallPhoto = chat_obj?.photo.small_file_id;
+    let chatBigPhoto = chat_obj?.photo?.big_file_id;
+    let chatSmallPhoto = chat_obj?.photo?.small_file_id;
 
-    let bigPhotoFile = await ctx.api.getFile(chatBigPhoto);
-    let smallPhotoFile = await ctx.api.getFile(chatSmallPhoto);
+    // let bigPhotoFile = await ctx.api.getFile(chatBigPhoto);
+    // let smallPhotoFile = await ctx.api.getFile(chatSmallPhoto);
 
-    const bigPhoto = await bigPhotoFile.getUrl();
-    const smallPhoto = await smallPhotoFile.getUrl();
+    // const bigPhoto = await bigPhotoFile.getUrl();
+    // const smallPhoto = await smallPhotoFile.getUrl();
 
     // let sender_chat_obj = JSON.stringify(sender_chat);
     // let photo = sender_chat_obj?.photo;
     // let message_chat = ctx.message.chat;
 
     // let getChatAdministrators = await ctx.getChatAdministrators(chatId);
+
+    // ! TODO remove resolve
+
+    resolve('done');
 
     let user = ctx.from.first_name;
     let userId = ctx.from.id;

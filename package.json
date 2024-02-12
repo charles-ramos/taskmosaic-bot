@@ -3,6 +3,7 @@
     "@grammyjs/chat-members": "^1.0.12",
     "dotenv": "^16.4.2",
     "grammy": "^1.20.3",
+    "parse": "^4.3.1",
     "telegraf": "^4.15.3"
   }
 }
