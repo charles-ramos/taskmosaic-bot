@@ -23,4 +23,4 @@ RUN npm install
 
 CMD [ "node", "./bot/index.js" ]
 
-# EXPOSE 3000
+EXPOSE 3000
