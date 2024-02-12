@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const {
   Bot,
   webhookCallback,
@@ -5,61 +7,17 @@ const {
   MemorySessionStorage,
 } = require('grammy');
 
-// const { Telegraf } = require("telegraf");
-// const { message } = require("telegraf/filters");
-
 const { chatMembers } = require('@grammyjs/chat-members');
-
-// import { chatMembers } from "@grammyjs/chat-members";
 
 const BOT_TOKEN = process.env.TG_BOT_TOKEN;
 
 const web_link = 'https://taskmosaic.com/' + BOT_TOKEN + '/webhook';
 const web_app_url = 'https://taskmosaic.com/app';
 
-// const bot = new Telegraf(BOT_TOKEN);
-// bot.start((ctx) => ctx.reply("Welcome"));
-// bot.help((ctx) => ctx.reply("Send me a sticker"));
-// bot.on(message("sticker"), (ctx) => ctx.reply("👍"));
-// bot.hears("hi", (ctx) => ctx.reply("Hey there"));
-// bot.launch();
-
-// // Enable graceful stop
-// process.once("SIGINT", () => bot.stop("SIGINT"));
-// process.once("SIGTERM", () => bot.stop("SIGTERM"));
-
-// const reply_url = "https://api.telegram.org/bot" + BOT_TOKEN;
-
 const bot = new Bot(BOT_TOKEN);
 
 const adapter = new MemorySessionStorage();
 bot.use(chatMembers(adapter));
-
-// // 2. Reply to text messages with the received text
-// bot.on("message:text", (ctx) => ctx.reply(ctx.message.text));
-
-// // 3. Start the bot
-// bot.start();
-
-// const bot = new Bot(BOT_TOKEN, {
-//   client: {
-//     // We accept the drawback of webhook replies for typing status.
-//     canUseWebhookReply: (method) => method === "sendChatAction",
-//   },
-//   botInfo: {
-//     id: 6781477012,
-//     is_bot: true,
-//     first_name: "TaskMosaic | Task Manager",
-//     username: "taskmosaic_bot",
-//     can_join_groups: true,
-//     can_read_all_group_messages: true,
-//     supports_inline_queries: false,
-//   },
-// });
-
-// bot.api.setWebhook(
-//   "https://taskmosaic.com/6781477012:AAHkAjA--S0k9TvlaTQMYSGU4RA1OOXSNvU/webhook"
-// );
 
 const keyboard = new Keyboard()
   .text('🔍??? Мой KZTRVL аккаунт')
@@ -67,20 +25,6 @@ const keyboard = new Keyboard()
   .text('😎 Настройка')
   .text('⭐️ Помощь')
   .resized();
-
-// await bot.api.setMyCommands([
-//   { command: "start", description: "Start the bot" },
-//   { command: "help", description: "Show help text" },
-//   { command: "settings", description: "Open settings" },
-// ]);
-
-// const keyboard = new Keyboard([
-//   // [Button.text("text")],
-//   // [Button.requestContact("text")],
-//   // [Button.requestLocation("text")],
-//   // [Button.requestPoll("text", "quiz")],
-//   [MenuButtonWebApp.url("web app", web_app_url)],
-// ]);
 
 bot.command('start', async (ctx) => {
   initGroup(ctx)
@@ -211,18 +155,6 @@ bot.command('task', async (ctx) => {
     'in-review': ['in-review', 'inreview', 'ir', 'In-Review'],
     done: ['done', 'dn', 'Done', 'DONE'],
   };
-  // let possibleStatus = {
-  //   "to-do": ["to-do", "todo", "td", "ToDO", "To-DO"],
-  //   "in-progress": [
-  //     "in-progress",
-  //     "inprogress",
-  //     "ip",
-  //     "In-Progress",
-  //     "In-Progress",
-  //   ],
-  //   "in-review": ["in-review", "inreview", "ir", "In-Review", "In-Review"],
-  //   done: ["done", "dn", "Done", "DONE"],
-  // };
 
   let statusItem;
   if (dateFound == true) {
