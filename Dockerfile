@@ -17,3 +17,5 @@ RUN npm install
 # RUN npm ci --only=production
 
 CMD [ "node", './bot/index.js']
+
+EXPOSE 3000
