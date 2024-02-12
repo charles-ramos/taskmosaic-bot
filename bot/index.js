@@ -12,6 +12,10 @@ const { chatMembers } = require('@grammyjs/chat-members');
 
 const Parse = require('parse/node');
 
+const fastify = require('fastify')({
+  logger: true,
+});
+
 Parse.initialize(process.env.BACK4APP_ID, process.env.BACK4APP_JS_KEY);
 Parse.masterKey = process.env.BACK4APP_MASTER_KEY;
 Parse.serverURL = 'https://parseapi.back4app.com/';
@@ -523,3 +527,9 @@ function initGroup(ctx) {
 //     // );
 //   }
 // );
+
+// Run the server!
+fastify.listen({ port: 3000 }, (err, address) => {
+  if (err) throw err;
+  // Server is now listening on ${address}
+});
